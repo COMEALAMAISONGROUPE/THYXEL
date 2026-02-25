@@ -4,76 +4,103 @@
 
 ## What is Thyxel?
 
-Thyxel is the first **self-mutating memecoin** on Base. Its parameters (burn rate, redistribution, max wallet) evolve autonomously every 7 days based on the collective behavior of all holders.
+Thyxel is the first **self-mutating memecoin** on **Solana**. Built with Token-2022 Transfer Hooks, its parameters (burn rate, max wallet) evolve autonomously every 7 days based on the collective behavior of all holders.
 
 Every wallet generates **behavioral DNA**. Every epoch creates a unique **fossil record**. The organism lives, breathes, and mutates on-chain.
 
-## Core Mechanics
+## Architecture (Solana)
 
-### Behavioral DNA
-Each wallet builds a DNA profile from on-chain activity:
-- **Loyalty Gene** - How long you hold
-- **Activity Gene** - How often you transact
-- **Appetite Gene** - How much volume you generate
-
-### Epoch Mutations (every 7 days)
-The contract reads aggregate behavior and mutates:
-- **Burn Rate**: 0.1% - 3%
-- **Redistribution Rate**: 0% - 2%
-- **Max Wallet**: 0.5% - 2%
-
-### Emotional States
-Based on activity, the organism enters states: `DORMANT`, `CALM`, `ACTIVE`, `FRENZY`
-
-### Fossil Record
-Each epoch state is stored immutably on-chain with a unique genome hash - an archaeological record of the organism's evolution.
-
-## Tokenomics
-
-| Parameter | Value |
-|---|---|
-| Name | Thyxel |
-| Symbol | THYX |
-| Total Supply | 404,000,000,000 |
-| Initial Burn | 1% |
-| Initial Redist | 0.5% |
-| Max Wallet | 1.5% |
-| Chain | Base |
-
-## Quick Start
-
-```bash
-git clone https://github.com/COMEALAMAISONGROUPE/THYXEL.git
-cd THYXEL
-npm install
-cp .env.example .env  # add your keys
-npx hardhat compile
-npx hardhat test
-```
-
-## Deploy
-
-```bash
-npx hardhat run scripts/deploy.ts --network baseSepolia
-```
+- **Runtime**: Solana + Anchor Framework
+- **Token Standard**: SPL Token-2022 with Transfer Hook Extension
+- **Program**: `programs/thyxel-hook/src/lib.rs` (Rust/Anchor)
+- **Key Features**:
+  - Behavioral DNA (loyalty, activity, appetite) per wallet
+  - Epoch-based mutation engine (7-day cycles)
+  - Dynamic burn rate (10-500 bps, mutates each epoch)
+  - Whale protection (max wallet cap, mutates each epoch)
+  - Fossil NFT system for extinct wallets
+  - Full on-chain event logging
 
 ## Project Structure
 
 ```
-contracts/
-  ThyxelToken.sol    # Main token + DNA + mutation engine
-scripts/
-  deploy.ts          # Deployment script
-test/
-  ThyxelToken.test.ts # Test suite (9 tests)
+THYXEL/
+  Anchor.toml          # Anchor project config
+  Cargo.toml           # Rust workspace
+  package.json         # Node dependencies
+  programs/
+    thyxel-hook/
+      Cargo.toml       # Program dependencies
+      src/
+        lib.rs         # Core Transfer Hook program
+  tests/
+    thyxel-hook.ts     # Anchor test suite
+  scripts/
+    create-token.ts    # Token-2022 mint creation
+    deploy-solana.ts   # Program deployment
+  docs/
+    WHITEPAPER.md      # Technical whitepaper
 ```
 
-## Security
+## Tokenomics
 
-- Ownership can be permanently renounced via `releaseToTheWild()`
-- All mutation parameters have hard-coded min/max boundaries
-- Anti-whale protection via dynamic max wallet
-- Open source and auditable
+| Parameter | Value |
+|-----------|-------|
+| Name | Thyxel |
+| Ticker | $THYX |
+| Supply | 1,000,000,000 |
+| Decimals | 9 |
+| Chain | Solana |
+| Standard | SPL Token-2022 |
+| Burn | Dynamic (1-5%, mutates) |
+| Max Wallet | Dynamic (mutates) |
+| Epoch | 7 days |
+
+## Behavioral DNA
+
+Every wallet has a DNA profile:
+- **Loyalty** (0-255): How long you hold
+- **Activity** (0-255): Transfer frequency
+- **Appetite** (0-255): Volume per transfer
+
+DNA influences burn rates, mutation outcomes, and fossil rarity.
+
+## Epoch Mutations
+
+Every 7 days, THYXEL mutates:
+1. Aggregate all wallet DNAs
+2. Compute new burn rate (10-500 bps)
+3. Compute new max wallet cap
+4. Generate genome hash for the epoch
+5. Emit `MutationTriggered` event
+6. Previous epoch becomes a fossil record
+
+## Quick Start
+
+```bash
+# Install dependencies
+yarn install
+
+# Build the program
+anchor build
+
+# Run tests
+anchor test
+
+# Deploy to devnet
+anchor deploy --provider.cluster devnet
+
+# Create the $THYX token
+yarn create-token
+
+# Deploy program + initialize
+yarn deploy-program
+```
+
+## Links
+
+- Whitepaper: [docs/WHITEPAPER.md](docs/WHITEPAPER.md)
+- Program: [programs/thyxel-hook/src/lib.rs](programs/thyxel-hook/src/lib.rs)
 
 ## License
 
