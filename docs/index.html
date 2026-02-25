@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THYXEL ($THYX) - The Living Token on Solana</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Courier New', monospace;
+      background: #0a0a0a;
+      color: #00ff88;
+      overflow-x: hidden;
+    }
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      position: relative;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(ellipse at center, rgba(0,255,136,0.1) 0%, transparent 70%);
+      animation: pulse 4s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.8; }
+    }
+    .dna-helix {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      animation: rotate 3s linear infinite;
+    }
+    @keyframes rotate {
+      0% { transform: rotateY(0deg); }
+      100% { transform: rotateY(360deg); }
+    }
+    h1 {
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      color: #00ff88;
+      text-shadow: 0 0 30px rgba(0,255,136,0.5);
+      position: relative;
+      z-index: 1;
+    }
+    .tagline {
+      font-size: clamp(1rem, 3vw, 1.5rem);
+      color: #88ffbb;
+      margin: 1rem 0 2rem;
+      opacity: 0.8;
+      position: relative;
+      z-index: 1;
+    }
+    .chain-badge {
+      display: inline-block;
+      padding: 0.5rem 1.5rem;
+      border: 2px solid #9945FF;
+      border-radius: 50px;
+      color: #9945FF;
+      font-weight: bold;
+      margin-bottom: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      padding: 4rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .feature {
+      background: rgba(0,255,136,0.05);
+      border: 1px solid rgba(0,255,136,0.2);
+      border-radius: 12px;
+      padding: 2rem;
+      transition: all 0.3s;
+    }
+    .feature:hover {
+      border-color: #00ff88;
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0,255,136,0.2);
+    }
+    .feature h3 { color: #00ff88; margin-bottom: 1rem; font-size: 1.3rem; }
+    .feature p { color: #88aa99; line-height: 1.6; }
+    .tokenomics {
+      padding: 4rem 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .tokenomics h2 {
+      font-size: 2rem;
+      color: #00ff88;
+      margin-bottom: 2rem;
+    }
+    .token-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .token-item {
+      padding: 1rem;
+      background: rgba(0,255,136,0.05);
+      border: 1px solid rgba(0,255,136,0.15);
+      border-radius: 8px;
+    }
+    .token-item .label { color: #88aa99; font-size: 0.85rem; }
+    .token-item .value { color: #00ff88; font-size: 1.2rem; font-weight: bold; margin-top: 0.3rem; }
+    .cta {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+    .cta a {
+      display: inline-block;
+      padding: 1rem 3rem;
+      background: #00ff88;
+      color: #0a0a0a;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.2rem;
+      border-radius: 8px;
+      margin: 0.5rem;
+      transition: all 0.3s;
+    }
+    .cta a:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(0,255,136,0.5); }
+    .cta a.secondary {
+      background: transparent;
+      border: 2px solid #00ff88;
+      color: #00ff88;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: #555;
+      border-top: 1px solid rgba(0,255,136,0.1);
+    }
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <div class="dna-helix">&#129516;</div>
+    <div class="chain-badge">SOLANA</div>
+    <h1>$THYX</h1>
+    <p class="tagline">The Living Token. You don't hold it. You ARE it.</p>
+  </section>
+
+  <section class="features">
+    <div class="feature">
+      <h3>&#129516; Behavioral DNA</h3>
+      <p>Every wallet generates a unique DNA profile: loyalty, activity, and appetite. Your behavior shapes the organism.</p>
+    </div>
+    <div class="feature">
+      <h3>&#9889; Epoch Mutations</h3>
+      <p>Every 7 days, $THYX mutates. Burn rates, wallet caps, and genome hashes evolve based on collective behavior.</p>
+    </div>
+    <div class="feature">
+      <h3>&#128293; Dynamic Burns</h3>
+      <p>Burn rate ranges from 0.1% to 5%, determined by the organism's emotional state each epoch.</p>
+    </div>
+    <div class="feature">
+      <h3>&#129504; Whale Protection</h3>
+      <p>Max wallet caps mutate each epoch, preventing any single holder from dominating the organism.</p>
+    </div>
+    <div class="feature">
+      <h3>&#129472; Fossil Records</h3>
+      <p>When a wallet goes extinct (0 balance), its DNA is preserved forever as a fossil NFT on-chain.</p>
+    </div>
+    <div class="feature">
+      <h3>&#128279; Transfer Hook</h3>
+      <p>Built on Token-2022 with Transfer Hook extension. Every transfer triggers DNA updates on Solana.</p>
+    </div>
+  </section>
+
+  <section class="tokenomics">
+    <h2>Tokenomics</h2>
+    <div class="token-grid">
+      <div class="token-item">
+        <div class="label">Supply</div>
+        <div class="value">1,000,000,000</div>
+      </div>
+      <div class="token-item">
+        <div class="label">Chain</div>
+        <div class="value">Solana</div>
+      </div>
+      <div class="token-item">
+        <div class="label">Standard</div>
+        <div class="value">Token-2022</div>
+      </div>
+      <div class="token-item">
+        <div class="label">Epoch</div>
+        <div class="value">7 Days</div>
+      </div>
+      <div class="token-item">
+        <div class="label">Burn Rate</div>
+        <div class="value">Dynamic</div>
+      </div>
+      <div class="token-item">
+        <div class="label">Max Wallet</div>
+        <div class="value">Dynamic</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <a href="https://github.com/COMEALAMAISONGROUPE/THYXEL">GitHub</a>
+    <a href="WHITEPAPER.md" class="secondary">Whitepaper</a>
+  </section>
+
+  <footer>
+    <p>THYXEL ($THYX) &mdash; The organism awaits its first breath. &mdash; 2025</p>
+  </footer>
+</body>
+</html>
