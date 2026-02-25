@@ -1,0 +1,35 @@
+{
+  "name": "thyxel-solana",
+  "version": "1.0.0",
+  "description": "THYXEL ($THYX) - The Living Token on Solana. Transfer Hook with Behavioral DNA & Epoch Mutations.",
+  "license": "MIT",
+  "scripts": {
+    "build": "anchor build",
+    "test": "anchor test",
+    "deploy:devnet": "anchor deploy --provider.cluster devnet",
+    "deploy:mainnet": "anchor deploy --provider.cluster mainnet-beta",
+    "create-token": "ts-node scripts/create-token.ts",
+    "deploy-program": "ts-node scripts/deploy-solana.ts",
+    "lint": "eslint . --ext .ts",
+    "clean": "rm -rf target node_modules"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.29.0",
+    "@solana/spl-token": "^0.4.0",
+    "@solana/web3.js": "^1.87.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.3.0",
+    "@types/mocha": "^10.0.0",
+    "@types/node": "^20.0.0",
+    "chai": "^4.3.0",
+    "eslint": "^8.50.0",
+    "mocha": "^10.2.0",
+    "ts-mocha": "^10.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
