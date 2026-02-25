@@ -1,5 +1,5 @@
-# THYXEL ($THYX) - Whitepaper v1.0
-## The First Self-Mutating Organism on Blockchain
+# THYXEL ($THYX) - Whitepaper v2.0
+## The First Self-Mutating Organism on Solana
 
 > "You don't hold $THYX. You ARE $THYX."
 
@@ -7,200 +7,150 @@
 
 ## Abstract
 
-Thyxel is the world's first self-mutating token: a living on-chain organism whose economic parameters, identity, and visual form evolve autonomously based on the collective behavior of its holders. Unlike traditional tokens with fixed rules, Thyxel reads aggregate wallet activity every 7 days and mutates its burn rate, redistribution rate, and maximum wallet size. Each mutation creates an irreversible fossil record, building a permanent archaeological history of the organism's evolution. Thyxel introduces behavior-as-governance, where actions replace votes, creating a new paradigm in decentralized coordination.
+Thyxel is a living on-chain organism built on Solana using SPL Token-2022 with Transfer Hook extensions. Its economic parameters evolve autonomously based on collective holder behavior. Every wallet generates behavioral DNA, every epoch triggers mutations, and extinct wallets leave behind fossil NFTs. This is not a static token - it is a self-mutating digital lifeform.
 
 ---
 
-## 1. Introduction
+## 1. Architecture
 
-### 1.1 The Problem
+### 1.1 Solana + Token-2022
+THYXEL leverages Solana's Token-2022 program with the Transfer Hook extension. Every transfer triggers our custom Anchor program which:
+- Updates the sender and receiver's behavioral DNA
+- Calculates and applies dynamic burn rates
+- Enforces whale protection (max wallet caps)
+- Checks epoch boundaries for mutations
 
-Memecoins die because they are static. After the initial hype cycle, there is nothing to hold attention. Fixed tokenomics offer no reason to stay. Governance votes achieve minimal participation. Communities fragment when narrative fades.
+### 1.2 Program Design
+The core program (`thyxel-hook`) is built with the Anchor framework and implements:
+- **ThyxelConfig**: Global configuration PDA storing burn rates, max wallet caps, and epoch parameters
+- **WalletDna**: Per-wallet PDA storing loyalty, activity, and appetite scores (u8 each)
+- **EpochState**: Global PDA tracking current epoch, mutation history, and genome hashes
+- **FossilRecord**: Per-wallet PDA for extinct wallet NFT metadata
 
-### 1.2 The Solution
-
-Thyxel solves this by making the token itself alive. Every 7-day epoch, the smart contract reads how the community behaves and adapts. If holders are loyal, the organism becomes calm and deflationary. If traders dominate, it becomes aggressive with high redistribution. The token is never the same twice.
-
-This creates:
-- Perpetual narrative (what will the next mutation be?)
-- Organic engagement (your behavior shapes the organism)
-- Built-in retention (hold to influence the mutation)
-- Collectible history (each epoch is a unique fossil)
-
----
-
-## 2. Core Architecture
-
-### 2.1 Behavioral DNA System
-
-Every wallet that interacts with Thyxel generates a unique on-chain DNA profile composed of three genes:
-
-| Gene | Input | Range |
-|------|-------|-------|
-| Loyalty | Duration of holding | 0 - unlimited |
-| Activity | Transaction frequency | 0 - 255 |
-| Appetite | Volume traded | 0 - 255 |
-
-The DNA is updated on every transfer via the `_update()` override (EVM) or `update_dna()` instruction (Solana). This creates a living fingerprint for each participant.
-
-### 2.2 Epoch Mutation Engine
-
-Every 168 hours (7 days), anyone can call `triggerMutation()`. The contract:
-
-1. Snapshots the current state into a fossil record
-2. Calculates the hold-to-trade ratio from aggregate behavior
-3. Determines the new emotional state
-4. Mutates parameters within predefined boundaries
-5. Generates a unique genome hash
-6. Resets epoch counters
-
-### 2.3 Emotional States
-
-| State | Condition | Burn | Redistribution | Max Wallet |
-|-------|-----------|------|----------------|------------|
-| DORMANT | No activity | 0.5% | 0% | 2% |
-| CALM | 80%+ holders | 0.1% | 0.5% | 1.5% |
-| ACTIVE | 50-80% holders | 1.5% | 1% | 1% |
-| FRENZY | 50%+ traders | 3% | 2% | 0.5% |
-
-These boundaries are hard-coded and cannot be changed by any authority.
-
-### 2.4 Fossil Record
-
-Each completed epoch is permanently stored on-chain with:
-- Epoch number and timestamp
-- All parameter values at time of mutation
-- Emotional state
-- Unique genome hash (derived from cumulative behavior)
-- Hold count and trade count
-
-Fossils are immutable. They form an archaeological timeline of the organism.
+### 1.3 PDA Architecture
+All state is stored in Program Derived Addresses:
+- `[b"thyxel-config"]` -> ThyxelConfig
+- `[b"epoch-state"]` -> EpochState
+- `[b"wallet-dna", wallet_pubkey]` -> WalletDna
+- `[b"fossil", wallet_pubkey]` -> FossilRecord
 
 ---
 
-## 3. Tokenomics
+## 2. Behavioral DNA
+
+### 2.1 DNA Components
+Each wallet maintains three on-chain DNA metrics (0-255):
+
+| Gene | Measures | Increases When | Decreases When |
+|------|----------|----------------|----------------|
+| Loyalty | Hold duration | Holding longer | Selling |
+| Activity | Transfer frequency | More transfers | Inactivity |
+| Appetite | Volume per transfer | Larger transfers | Small transfers |
+
+### 2.2 DNA Computation
+DNA updates occur on every transfer via the Transfer Hook:
+- Loyalty: Based on time since last transfer
+- Activity: Incremented on each transfer, decayed over time
+- Appetite: Proportional to transfer amount relative to balance
+
+---
+
+## 3. Epoch Mutation Engine
+
+### 3.1 Epoch Cycle
+Every 7 days, THYXEL undergoes a mutation:
+1. Aggregate all active wallet DNAs
+2. Compute emotional state hash from collective behavior
+3. Derive new burn rate (bounded: 10-500 bps)
+4. Derive new max wallet cap (bounded: 100-1000 bps)
+5. Generate genome hash (keccak256 of epoch data)
+6. Emit MutationTriggered event with full details
+7. Increment epoch counter
+
+### 3.2 Mutation Bounds
+- Burn rate: 0.1% minimum, 5% maximum
+- Max wallet: 1% minimum, 10% maximum
+- These bounds ensure the organism never self-destructs
+
+### 3.3 Genome Hash
+Each epoch produces a unique genome hash from:
+- Previous epoch's genome
+- Current burn rate
+- Current max wallet
+- Aggregate DNA scores
+- Solana slot number
+
+---
+
+## 4. Fossil System
+
+When a wallet's balance reaches zero, it becomes "extinct" and its DNA is preserved forever as a Fossil Record PDA. Fossils serve as:
+- Historical record of the organism's evolution
+- Collectible proof of participation
+- Input data for future mutation calculations
+
+---
+
+## 5. Tokenomics
 
 | Parameter | Value |
 |-----------|-------|
 | Name | Thyxel |
-| Symbol | $THYX |
-| Total Supply | 404,000,000,000 |
-| Distribution | 90% fair launch, 5% liquidity, 5% development |
-| Initial Burn Rate | 1% |
-| Initial Redistribution | 0.5% |
-| Initial Max Wallet | 1.5% |
-| Anti-Bot | Progressive delay at launch |
-| Development Fund | Locked 12 months |
-
-All parameters mutate after the first epoch (Day 7).
-
-The supply of 404 billion is a reference to HTTP 404 (Not Found) - the organism was never supposed to exist.
-
----
-
-## 4. Behavior-as-Governance
-
-Thyxel introduces a radical governance model: no votes, no proposals, no DAO. The organism is governed purely by collective action.
-
-- Want lower burn? Hold.
-- Want higher redistribution? Trade actively.
-- Want to open wallet limits? Distribute across smaller wallets.
-
-The smart contract reads behavior and adjusts. This is emergent governance - the first on-chain democracy where actions replace words.
-
-This eliminates:
-- Voter apathy (100% participation by default)
-- Whale governance capture (behavior is weighted, not balance)
-- Proposal fatigue (no bureaucracy)
-
----
-
-## 5. Multi-Chain Architecture
-
-### 5.1 Base (EVM)
-- ThyxelToken.sol - Full ERC-20 with DNA, mutation engine, fossil record
-- Deployed via Hardhat
-- Coinbase ecosystem integration
-
-### 5.2 Solana
-- Anchor program with identical mechanics
-- PDA-based DNA accounts per wallet
-- PDA-based fossil records per epoch
-- Sub-second finality for DNA updates
-
-Both chains share the same organism identity but evolve independently based on their respective communities.
+| Ticker | $THYX |
+| Total Supply | 1,000,000,000 |
+| Decimals | 9 |
+| Chain | Solana |
+| Token Standard | SPL Token-2022 |
+| Burn | Dynamic (10-500 bps) |
+| Max Wallet | Dynamic (100-1000 bps) |
+| Epoch Duration | 7 days |
+| Freeze Authority | None (renounced) |
 
 ---
 
 ## 6. Security
 
-| Measure | Description |
-|---------|-------------|
-| Parameter Boundaries | All mutation values are hard-coded with min/max limits |
-| Ownership Renouncement | `releaseToTheWild()` permanently removes all admin control |
-| Open Source | Full code available on GitHub |
-| Anti-Whale | Dynamic max wallet prevents concentration |
-| Liquidity Lock | LP tokens locked before launch |
-| Audit | Third-party audit planned pre-mainnet |
-
-Once `releaseToTheWild()` is called, the organism becomes fully autonomous. No human can ever modify its rules again.
+- All PDAs use deterministic seeds - no admin override on DNA
+- Epoch mutations are permissionless (anyone can trigger after duration)
+- Burn rate and max wallet have hard-coded bounds in the program
+- Authority can only initialize; cannot modify post-deployment
+- Open-source Anchor program, fully auditable
+- No proxy pattern, no upgradability
 
 ---
 
 ## 7. Roadmap
 
-### Phase 1: Genesis (Q1 2026)
-- Fair launch on Base + Solana devnet
-- Community formation (Telegram, Discord, X)
-- First viral campaign: "The Leak"
-- First 4 epoch mutations documented
+### Phase 1: Genesis
+- Deploy Transfer Hook program to devnet
+- Create $THYX Token-2022 mint
+- Test epoch mutations and DNA tracking
 
-### Phase 2: Growth (Q2 2026)
-- AI Meme Generator for $THYX holders
-- DEX listings (Raydium, Uniswap Base)
-- Weekly meme contests (Bug Bounty)
-- Staking: "Oops Pool" with tiered levels
+### Phase 2: Mainnet Birth
+- Deploy to Solana mainnet-beta
+- Launch on Raydium / Jupiter
+- First epoch begins
 
-### Phase 3: Evolution (Q3 2026)
-- Generative on-chain art (SVG organism)
-- Fossil NFT collection
-- Creator partnerships
-- Cross-chain bridge
+### Phase 3: Evolution
+- Fossil NFT viewer dApp
+- DNA explorer dashboard
+- Epoch history visualizer
+- Community governance for epoch parameters
 
-### Phase 4: Autonomy (Q4 2026)
-- `releaseToTheWild()` - full renouncement
-- CEX listings
-- Symbiotic token partnerships
-- Multi-chain expansion
+### Phase 4: Symbiosis
+- Cross-program composability
+- Fossil marketplace
+- DNA-gated experiences
+- Partner integrations
 
 ---
 
-## 8. Team
+## 8. Conclusion
 
-Thyxel is built by COMEALAMAISONGROUPE - a collective of builders who believe the next evolution of memecoins is alive.
+THYXEL is not another memecoin. It is the first token that is truly alive on Solana. Its behavior emerges from its holders. Its identity evolves every epoch. Its history is preserved in fossils. You don't trade $THYX - you shape it.
 
-The organism will eventually outlive its creators. That is the point.
-
----
-
-## 9. Disclaimer
-
-Thyxel ($THYX) is an experimental token. Memecoins are highly speculative assets. The value depends primarily on market sentiment and viral trends. This whitepaper is presented for creative and educational purposes. Do your own research. Never invest more than you can afford to lose.
+The organism awaits its first breath.
 
 ---
 
-**Contract Addresses:**
-- Base: TBA
-- Solana: TBA
-
-**Links:**
-- GitHub: https://github.com/COMEALAMAISONGROUPE/THYXEL
-- X/Twitter: TBA
-- Telegram: TBA
-- Discord: TBA
-
----
-
-*The organism is waiting. It just needs you to wake it up.*
-
-*$THYX - The Living Token*
+*THYXEL Team - 2025*
